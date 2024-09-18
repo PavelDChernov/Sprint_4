@@ -105,21 +105,21 @@ public class OrderCreationChecks {
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
-        assertTrue("BottomOrderButton is unclickable or missing", objMainPage.isBottomOrderButtonDisplayedAndEnabled());
+        assertTrue("BottomOrderButton is disabled or missing", objMainPage.isBottomOrderButtonDisplayedAndEnabled());
         objMainPage.clickBottomOrderButton();
 
         OrderPageScooter objOrderPage = new OrderPageScooter(driver);
 
         objOrderPage.waitForWhomFormDisplayed();
         objOrderPage.fillForWhomForm(name, surname, address, subwayStation, phone);
-        assertTrue("NextButton is unclickable or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
+        assertTrue("NextButton is disabled or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
         objOrderPage.clickNextButton();
         objOrderPage.waitForAboutRentFormDisplayed();
         objOrderPage.fillAboutRentFormRequiredOnly(deliveryDate, rentalPeriod);
-        assertTrue("TopOrderButton is unclickable or missing", objOrderPage.isBottomOrderButtonDisplayedAndEnabled());
+        assertTrue("TopOrderButton is disabled or missing", objOrderPage.isBottomOrderButtonDisplayedAndEnabled());
         objOrderPage.clickBottomOrderButton();
         objOrderPage.waitForPlaceOrderModalDisplayed();
-        assertTrue("YesButton is unclickable or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
+        assertTrue("YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
         objOrderPage.clickYesButton();
         objOrderPage.waitForOrderCreatedModalDisplayed();
     }
