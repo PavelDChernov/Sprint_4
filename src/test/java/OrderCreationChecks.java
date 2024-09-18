@@ -1,6 +1,7 @@
 import constants.Color;
 import constants.RentalPeriod;
 import constants.WebDriverOption;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
@@ -52,24 +53,26 @@ public class OrderCreationChecks {
         };
     }
 
-
-    @Test
-    public void checkOrderCreationUsingBottomButtonsOnlyRequiredFields() {
+    @Before
+    public void initWebDriver() {
         switch (webDriver) {
             case CHROME:
                 ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments("--start-maximized");
+                chromeDriverOptions.addArguments("--no-sandbox", "--headless", "--disable-dev-shm-usage");
                 driver = new ChromeDriver(chromeDriverOptions);
                 break;
             case FIREFOX:
                 FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments("--start-maximized");
+                firefoxDriverOptions.addArguments("");
                 driver = new FirefoxDriver(firefoxDriverOptions);
                 break;
             default:
                 break;
         }
+    }
 
+    @Test
+    public void checkOrderCreationUsingBottomButtonsOnlyRequiredFields() {
         driver.get("https://qa-scooter.praktikum-services.ru/");
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
@@ -95,21 +98,6 @@ public class OrderCreationChecks {
 
     @Test
     public void checkOrderCreationUsingTopButtonsFullFields() {
-        switch (webDriver) {
-            case CHROME:
-                ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments("--start-maximized");
-                driver = new ChromeDriver(chromeDriverOptions);
-                break;
-            case FIREFOX:
-                FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments("--start-maximized");
-                driver = new FirefoxDriver(firefoxDriverOptions);
-                break;
-            default:
-                break;
-        }
-
         driver.get("https://qa-scooter.praktikum-services.ru/");
 
         MainPageScooter objMainPage = new MainPageScooter(driver);

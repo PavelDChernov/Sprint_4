@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import constants.FaqOptions;
 import constants.WebDriverOption;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,23 +30,26 @@ public class FaqCheck {
         };
     }
 
-    @Test
-    public void checkFaqPanelsOpenAndHaveAppropriateText() {
+    @Before
+    public void initWebDriver() {
         switch (webDriver) {
             case CHROME:
                 ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments("--start-maximized");
+                chromeDriverOptions.addArguments("--no-sandbox", "--headless", "--disable-dev-shm-usage");
                 driver = new ChromeDriver(chromeDriverOptions);
                 break;
             case FIREFOX:
                 FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments("--start-maximized");
+                firefoxDriverOptions.addArguments("");
                 driver = new FirefoxDriver(firefoxDriverOptions);
                 break;
             default:
                 break;
         }
+    }
 
+    @Test
+    public void checkFaqPanelsOpenAndHaveAppropriateText() {
         driver.get("https://qa-scooter.praktikum-services.ru/");
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
