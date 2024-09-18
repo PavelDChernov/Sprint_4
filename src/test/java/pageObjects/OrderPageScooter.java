@@ -34,7 +34,7 @@ public class OrderPageScooter {
     //  локатор чекбокса "Цвет самоката - Черный"
     private By blackColorCheckbox = By.id("black");
     //  локатор чекбокса "Цвет самоката - Серый"
-    private By greyColorCheckbox = By.id("grey");
+    private By grayColorCheckbox = By.id("grey");
     //  локатор поля "Комментарий"
     private By commentField = By.xpath(".//input[contains(@placeholder,'Комментарий')]");
     // локатор кнопки "Заказать" в хедере
@@ -111,7 +111,7 @@ public class OrderPageScooter {
     }
     // метод переключает чекбокс "Цвет самоката - серый"
     public void toggleGrayColorCheckbox() {
-        driver.findElement(greyColorCheckbox).click();
+        driver.findElement(grayColorCheckbox).click();
     }
     // метод устанавливает "Цвет самоката"
     public void fillColor(Color color) {
@@ -121,8 +121,8 @@ public class OrderPageScooter {
                     toggleBlackColorCheckbox();
                 }
                 break;
-            case GREY:
-                if (!driver.findElement(greyColorCheckbox).isSelected()) {
+            case GRAY:
+                if (!driver.findElement(grayColorCheckbox).isSelected()) {
                     toggleGrayColorCheckbox();
                 }
                 break;

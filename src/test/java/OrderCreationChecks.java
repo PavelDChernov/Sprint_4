@@ -63,7 +63,7 @@ public class OrderCreationChecks {
                     "Бульвар Адмирала Ушакова",
                     "+79991841843",
                     "30.09.2024",
-                    RentalPeriod.SEVEN_DAYS, Color.GREY,
+                    RentalPeriod.SEVEN_DAYS, Color.GRAY,
                     ""
                 },
                 {   UsedWebDriver.CHROME,
