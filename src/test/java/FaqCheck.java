@@ -58,8 +58,7 @@ public class FaqCheck {
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
-        final int numberOfFaqPanels = objMainPage.getNumberOfFaqPanels();
-        for (int i = 0; i < numberOfFaqPanels; ++i) {
+        for (int i = 0; i < objMainPage.getNumberOfFaqPanels(); ++i) {
             objMainPage.waitForFaqPanelButtonDisplayed(i);;
             assertTrue("faqPanelButton is disabled or missing", objMainPage.isFaqPanelButtonDisplayedAndEnabled(i));
             objMainPage.clickFaqPanelButton(i);
