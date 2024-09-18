@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 import constants.FaqOptions;
-import constants.WebDriverOption;
+import constants.UsedWebDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,19 +14,23 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import pageObjects.MainPageScooter;
 
+import java.util.List;
+
 @RunWith(Parameterized.class)
 public class FaqCheck {
     private WebDriver driver;
-    private final WebDriverOption webDriver;
+    private final UsedWebDriver webDriver;
+    private final List<String> driverOptions;
 
-    public FaqCheck (WebDriverOption webDriver) {
+    public FaqCheck (UsedWebDriver webDriver, List<String> driverOptions) {
         this.webDriver = webDriver;
+        this.driverOptions = driverOptions;
     }
 
     @Parameterized.Parameters
     public static Object[][] getTestData() {
         return new Object[][]{
-                { WebDriverOption.CHROME }
+                { UsedWebDriver.CHROME, List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage" ) }
         };
     }
 
@@ -35,12 +39,12 @@ public class FaqCheck {
         switch (webDriver) {
             case CHROME:
                 ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments("--no-sandbox", "--headless", "--disable-dev-shm-usage");
+                chromeDriverOptions.addArguments(driverOptions);
                 driver = new ChromeDriver(chromeDriverOptions);
                 break;
             case FIREFOX:
                 FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments("");
+                firefoxDriverOptions.addArguments(driverOptions);
                 driver = new FirefoxDriver(firefoxDriverOptions);
                 break;
             default:

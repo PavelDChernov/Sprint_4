@@ -1,7 +1,7 @@
 package constants;
 
 // Используемый драйвер
-public enum WebDriverOption {
+public enum UsedWebDriver {
     CHROME,
     FIREFOX
 }

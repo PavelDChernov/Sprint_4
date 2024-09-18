@@ -1,6 +1,6 @@
 import constants.Color;
 import constants.RentalPeriod;
-import constants.WebDriverOption;
+import constants.UsedWebDriver;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,13 +14,16 @@ import org.junit.Test;
 import pageObjects.MainPageScooter;
 import pageObjects.OrderPageScooter;
 
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Parameterized.class)
 public class OrderCreationChecks {
     private WebDriver driver;
-    private final WebDriverOption webDriver;
+    private final UsedWebDriver webDriver;
+    private final List<String> driverOptions;
     private final String name;
     private final String surname;
     private final String address;
@@ -31,8 +34,11 @@ public class OrderCreationChecks {
     private final Color color;
     private final String comment;
 
-    public OrderCreationChecks(WebDriverOption webDriver, String name, String surname, String address, String subwayStation, String phone, String deliveryDate, RentalPeriod rentalPeriod, Color color, String comment) {
+    public OrderCreationChecks( UsedWebDriver webDriver, List<String> driverOptions, String name, String surname,
+                                String address, String subwayStation, String phone, String deliveryDate,
+                                RentalPeriod rentalPeriod, Color color, String comment) {
         this.webDriver = webDriver;
+        this.driverOptions = driverOptions;
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -48,8 +54,30 @@ public class OrderCreationChecks {
     @Parameterized.Parameters
     public static Object[][] getTestData() {
         return new Object[][]{
-                {WebDriverOption.CHROME, "Акакий", "Башмачкин", "Москва, Рахмановский пер., д. 3", "Бульвар Адмирала Ушакова", "+79991841843", "30.09.2024", RentalPeriod.SEVEN_DAYS, Color.GREY, ""},
-                {WebDriverOption.CHROME, "Хо", "Мин", "Москва", "ВДНХ", "88121841843", "01.10.2024", RentalPeriod.THREE_DAYS, Color.BLACK, "Не кантовать"},
+                {
+                    UsedWebDriver.CHROME,
+                    List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                    "Акакий",
+                    "Башмачкин",
+                    "Москва, Рахмановский пер., д. 3",
+                    "Бульвар Адмирала Ушакова",
+                    "+79991841843",
+                    "30.09.2024",
+                    RentalPeriod.SEVEN_DAYS, Color.GREY,
+                    ""
+                },
+                {   UsedWebDriver.CHROME,
+                    List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                    "Хо",
+                    "Мин",
+                    "Москва",
+                    "ВДНХ",
+                    "88121841843",
+                    "01.10.2024",
+                    RentalPeriod.THREE_DAYS,
+                    Color.BLACK,
+                    "Не кантовать"
+                }
         };
     }
 
@@ -58,12 +86,12 @@ public class OrderCreationChecks {
         switch (webDriver) {
             case CHROME:
                 ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments("--no-sandbox", "--headless", "--disable-dev-shm-usage");
+                chromeDriverOptions.addArguments(driverOptions);
                 driver = new ChromeDriver(chromeDriverOptions);
                 break;
             case FIREFOX:
                 FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments("");
+                firefoxDriverOptions.addArguments(driverOptions);
                 driver = new FirefoxDriver(firefoxDriverOptions);
                 break;
             default:
