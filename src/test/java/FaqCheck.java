@@ -1,55 +1,76 @@
 import static org.junit.Assert.*;
-
-import constants.FaqOptions;
 import constants.UsedWebDriver;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import pageObjects.MainPageScooter;
+import service.AbstractAutoTest;
 
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public class FaqCheck {
-    private WebDriver driver;
-    private final UsedWebDriver webDriver;
-    private final List<String> driverOptions;
+public class FaqCheck extends AbstractAutoTest {
+    private final String faqPanelButtonText;
+    private final String faqPanelText;
 
-    public FaqCheck (UsedWebDriver webDriver, List<String> driverOptions) {
-        this.webDriver = webDriver;
-        this.driverOptions = driverOptions;
+    public FaqCheck (UsedWebDriver webDriver, List<String> driverOptions, String faqPanelButtonText, String faqPanelText) {
+        super(webDriver,driverOptions);
+        this.faqPanelButtonText = faqPanelButtonText;
+        this.faqPanelText = faqPanelText;
     }
 
     @Parameterized.Parameters
     public static Object[][] getTestData() {
         return new Object[][]{
-                { UsedWebDriver.CHROME, List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage" ) }
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Сколько это стоит? И как оплатить?",
+                        "Да, обязательно. Всем самокатов! И Москве, и Московской области."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Хочу сразу несколько самокатов! Так можно?",
+                        "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Как рассчитывается время аренды?",
+                        "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Можно ли заказать самокат прямо на сегодня?",
+                        "Только начиная с завтрашнего дня. Но скоро станем расторопнее."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Можно ли продлить заказ или вернуть самокат раньше?",
+                        "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Вы привозите зарядку вместе с самокатом?",
+                        "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Можно ли отменить заказ?",
+                        "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои."
+                },
+                {
+                        UsedWebDriver.CHROME,
+                        List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
+                        "Я жизу за МКАДом, привезёте?",
+                        "Да, обязательно. Всем самокатов! И Москве, и Московской области."
+                }
         };
-    }
-
-    @Before
-    public void initWebDriver() {
-        switch (webDriver) {
-            case CHROME:
-                ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments(driverOptions);
-                driver = new ChromeDriver(chromeDriverOptions);
-                break;
-            case FIREFOX:
-                FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments(driverOptions);
-                driver = new FirefoxDriver(firefoxDriverOptions);
-                break;
-            default:
-                break;
-        }
     }
 
     @Test
@@ -58,17 +79,10 @@ public class FaqCheck {
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
-        for (int i = 0; i < objMainPage.getNumberOfFaqPanels(); ++i) {
-            objMainPage.waitForFaqPanelButtonDisplayed(i);;
-            assertTrue("faqPanelButton is disabled or missing", objMainPage.isFaqPanelButtonDisplayedAndEnabled(i));
-            objMainPage.clickFaqPanelButton(i);
-            objMainPage.waitForFaqPanelDisplayed(i);
-            assertTrue("faqPanel is not visible", objMainPage.isFaqPanelDisplayed(i));
-            assertEquals(FaqOptions.FAQ.get(objMainPage.getFaqPanelButtonText(i)), objMainPage.getFaqPanelText(i));
-        }
-    }
-    @After
-    public void teardown() {
-        driver.quit();
+        objMainPage.waitForFaqPanelButtonDisplayed(faqPanelButtonText);;
+        assertTrue("faqPanelButton is disabled or missing", objMainPage.isFaqPanelButtonDisplayedAndEnabled(faqPanelButtonText));
+        objMainPage.clickFaqPanelButton(faqPanelButtonText);
+        objMainPage.waitForFaqPanelDisplayed(faqPanelText);
+        assertTrue("faqPanel is not visible", objMainPage.isFaqPanelDisplayed(faqPanelText));
     }
 }

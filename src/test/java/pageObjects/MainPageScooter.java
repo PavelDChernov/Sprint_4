@@ -41,56 +41,41 @@ public class MainPageScooter {
         driver.findElement(orderButtonBottom).click();
     }
 
-    // метод получения числа вкладок списка "Вопросы о важном"
-    public int getNumberOfFaqPanels() {
-        return driver.findElements(By.className("accordion__item")).size();
-    }
-
     // метод возвращает локатор на вкладку списка "Вопросы о важном"
-    public By getFaqPanelButton(int i) {
-        return By.id("accordion__heading-" + i);
+    public By getFaqPanelButton(String faqPanelButtonText) {
+        return By.xpath(".//div[text()='" + faqPanelButtonText + "']/..");
     }
 
     // метод ожидает отображение вкладки списка "Вопросы о важном"
-    public void waitForFaqPanelButtonDisplayed(int i) {
+    public void waitForFaqPanelButtonDisplayed(String faqPanelButtonText) {
         new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOfElementLocated(getFaqPanelButton(i)));
+                .until(ExpectedConditions.visibilityOfElementLocated(getFaqPanelButton(faqPanelButtonText)));
     }
 
     // метод проверяет доступность вкладки списка "Вопросы о важном"
-    public boolean isFaqPanelButtonDisplayedAndEnabled(int i) {
-        return driver.findElement(getFaqPanelButton(i)).isDisplayed() && driver.findElement(getFaqPanelButton(i)).isEnabled();
+    public boolean isFaqPanelButtonDisplayedAndEnabled(String faqPanelButtonText) {
+        return driver.findElement(getFaqPanelButton(faqPanelButtonText)).isDisplayed() && driver.findElement(getFaqPanelButton(faqPanelButtonText)).isEnabled();
     }
 
     // метод кликает по вкладке списка "Вопросы о важном"
-    public void clickFaqPanelButton(int i) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(getFaqPanelButton(i)));
-        driver.findElement(getFaqPanelButton(i)).click();
-    }
-
-    // метод возвращает текст вкладки списка "Вопросы о важном"
-    public String getFaqPanelButtonText(int i) {
-        return driver.findElement(getFaqPanelButton(i)).getText();
+    public void clickFaqPanelButton(String faqPanelButtonText) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(getFaqPanelButton(faqPanelButtonText)));
+        driver.findElement(getFaqPanelButton(faqPanelButtonText)).click();
     }
 
     // метод возвращает локатор на открытую вкладку списка "Вопросы о важном"
-    public By getFaqPanel(int i) {
-        return By.id("accordion__panel-" + i);
+    public By getFaqPanel(String faqPpanelText) {
+        return By.xpath(".//p[text()='" + faqPpanelText + "']/..");
     }
 
     // метод ожидает отображение открытой вкладки списка "Вопросы о важном"
-    public void waitForFaqPanelDisplayed(int i) {
+    public void waitForFaqPanelDisplayed(String faqPpanelText) {
         new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOfElementLocated(getFaqPanel(i)));
+                .until(ExpectedConditions.visibilityOfElementLocated(getFaqPanel(faqPpanelText)));
     }
 
     // метод проверяет отображение открытой вкладки списка "Вопросы о важном"
-    public boolean isFaqPanelDisplayed(int i) {
-        return driver.findElement(getFaqPanel(i)).isDisplayed();
-    }
-
-    // метод возвращает текст открытой вкладки списка "Вопросы о важном"
-    public String getFaqPanelText(int i) {
-        return driver.findElement(getFaqPanel(i)).getText();
+    public boolean isFaqPanelDisplayed(String faqPpanelText) {
+        return driver.findElement(getFaqPanel(faqPpanelText)).isDisplayed();
     }
 }

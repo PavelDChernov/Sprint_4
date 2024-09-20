@@ -1,18 +1,12 @@
 import constants.Color;
 import constants.RentalPeriod;
 import constants.UsedWebDriver;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.junit.After;
 import org.junit.Test;
 import pageObjects.MainPageScooter;
 import pageObjects.OrderPageScooter;
+import service.AbstractAutoTest;
 
 import java.util.List;
 
@@ -20,10 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Parameterized.class)
-public class OrderCreationChecks {
-    private WebDriver driver;
-    private final UsedWebDriver webDriver;
-    private final List<String> driverOptions;
+public class OrderCreationChecks extends AbstractAutoTest {
     private final String name;
     private final String surname;
     private final String address;
@@ -37,8 +28,7 @@ public class OrderCreationChecks {
     public OrderCreationChecks( UsedWebDriver webDriver, List<String> driverOptions, String name, String surname,
                                 String address, String subwayStation, String phone, String deliveryDate,
                                 RentalPeriod rentalPeriod, Color color, String comment) {
-        this.webDriver = webDriver;
-        this.driverOptions = driverOptions;
+        super(webDriver,driverOptions);
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -49,7 +39,6 @@ public class OrderCreationChecks {
         this.color = color;
         this.comment = comment;
     }
-
 
     @Parameterized.Parameters
     public static Object[][] getTestData() {
@@ -79,24 +68,6 @@ public class OrderCreationChecks {
                     "Не кантовать"
                 }
         };
-    }
-
-    @Before
-    public void initWebDriver() {
-        switch (webDriver) {
-            case CHROME:
-                ChromeOptions chromeDriverOptions = new ChromeOptions();
-                chromeDriverOptions.addArguments(driverOptions);
-                driver = new ChromeDriver(chromeDriverOptions);
-                break;
-            case FIREFOX:
-                FirefoxOptions firefoxDriverOptions = new FirefoxOptions();
-                firefoxDriverOptions.addArguments(driverOptions);
-                driver = new FirefoxDriver(firefoxDriverOptions);
-                break;
-            default:
-                break;
-        }
     }
 
     @Test
@@ -147,10 +118,5 @@ public class OrderCreationChecks {
         assertTrue("YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
         objOrderPage.clickYesButton();
         objOrderPage.waitForOrderCreatedModalDisplayed();
-    }
-
-    @After
-    public void teardown() {
-        driver.quit();
     }
 }
