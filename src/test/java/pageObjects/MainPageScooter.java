@@ -4,10 +4,12 @@ package pageObjects;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 
 // Локаторы и методы для главной страницы
@@ -23,6 +25,13 @@ public class MainPageScooter {
         this.driver = driver;
     }
 
+    // метод закрывает баннер про куки, если он есть
+    public void acceptCookie() {
+        List<WebElement> elements =  driver.findElements(By.xpath(".//div[contains(@class,'App_CookieConsent')]"));
+        if (!elements.isEmpty()) {
+            driver.findElement(By.id("rcc-confirm-button")).click();
+        }
+    }
     // метод проверяет доступность кнопки "Заказать" в хедере
     public boolean isTopOrderButtonDisplayedAndEnabled() {
         return driver.findElement(orderButtonTop).isDisplayed() && driver.findElement(orderButtonTop).isEnabled();

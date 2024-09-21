@@ -1,20 +1,21 @@
 import constants.Color;
 import constants.RentalPeriod;
 import constants.UsedWebDriver;
+import org.hamcrest.MatcherAssert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.Test;
 import pageObjects.MainPageScooter;
 import pageObjects.OrderPageScooter;
 import service.AbstractAutoTest;
-
 import java.util.List;
-
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Parameterized.class)
-public class OrderCreationChecks extends AbstractAutoTest {
+public class OrderCreationTests extends AbstractAutoTest {
     private final String name;
     private final String surname;
     private final String address;
@@ -25,9 +26,9 @@ public class OrderCreationChecks extends AbstractAutoTest {
     private final Color color;
     private final String comment;
 
-    public OrderCreationChecks( UsedWebDriver webDriver, List<String> driverOptions, String name, String surname,
-                                String address, String subwayStation, String phone, String deliveryDate,
-                                RentalPeriod rentalPeriod, Color color, String comment) {
+    public OrderCreationTests(UsedWebDriver webDriver, List<String> driverOptions, String name, String surname,
+                              String address, String subwayStation, String phone, String deliveryDate,
+                              RentalPeriod rentalPeriod, Color color, String comment) {
         super(webDriver,driverOptions);
         this.name = name;
         this.surname = surname;
@@ -52,10 +53,12 @@ public class OrderCreationChecks extends AbstractAutoTest {
                     "Бульвар Адмирала Ушакова",
                     "+79991841843",
                     "30.09.2024",
-                    RentalPeriod.SEVEN_DAYS, Color.GRAY,
+                    RentalPeriod.SEVEN_DAYS,
+                    Color.GRAY,
                     ""
                 },
-                {   UsedWebDriver.CHROME,
+                {
+                    UsedWebDriver.CHROME,
                     List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
                     "Хо",
                     "Мин",
@@ -76,23 +79,24 @@ public class OrderCreationChecks extends AbstractAutoTest {
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
-        assertTrue("BottomOrderButton is disabled or missing", objMainPage.isBottomOrderButtonDisplayedAndEnabled());
+        assertTrue("MainPage - BottomOrderButton is disabled or missing", objMainPage.isBottomOrderButtonDisplayedAndEnabled());
+        objMainPage.acceptCookie();
         objMainPage.clickBottomOrderButton();
 
         OrderPageScooter objOrderPage = new OrderPageScooter(driver);
 
-        objOrderPage.waitForWhomFormDisplayed();
         objOrderPage.fillForWhomForm(name, surname, address, subwayStation, phone);
-        assertTrue("NextButton is disabled or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
+        assertTrue("ForWhomForm - NextButton is disabled or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
         objOrderPage.clickNextButton();
-        objOrderPage.waitForAboutRentFormDisplayed();
+        assertEquals("Про аренду", objOrderPage.getOrderFormTitle());
         objOrderPage.fillAboutRentFormRequiredOnly(deliveryDate, rentalPeriod);
-        assertTrue("TopOrderButton is disabled or missing", objOrderPage.isBottomOrderButtonDisplayedAndEnabled());
+        assertTrue("AboutRentForm - TopOrderButton is disabled or missing", objOrderPage.isTopOrderButtonDisplayedAndEnabled());
         objOrderPage.clickBottomOrderButton();
-        objOrderPage.waitForPlaceOrderModalDisplayed();
-        assertTrue("YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
+        assertTrue("BottomOrderButtonClicked - PlaceOrderModal is not displayed", objOrderPage.isOrderModalPresent());
+        MatcherAssert.assertThat(objOrderPage.getOrderModalTitle(), startsWith("Хотите оформить заказ?"));
+        assertTrue("OrderModal - YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
         objOrderPage.clickYesButton();
-        objOrderPage.waitForOrderCreatedModalDisplayed();
+        MatcherAssert.assertThat(objOrderPage.getOrderModalTitle(), startsWith("Заказ оформлен"));
     }
 
     @Test
@@ -102,21 +106,22 @@ public class OrderCreationChecks extends AbstractAutoTest {
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
         assertTrue("TopOrderButton is disabled or missing", objMainPage.isTopOrderButtonDisplayedAndEnabled());
+        objMainPage.acceptCookie();
         objMainPage.clickTopOrderButton();
 
         OrderPageScooter objOrderPage = new OrderPageScooter(driver);
-
-        objOrderPage.waitForWhomFormDisplayed();
+        assertEquals("Для кого самокат", objOrderPage.getOrderFormTitle());
         objOrderPage.fillForWhomForm(name, surname, address, subwayStation, phone);
-        assertTrue("NextButton is disabled or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
+        assertTrue("ForWhomForm - NextButton is disabled or missing", objOrderPage.isNextButtonDisplayedAndEnabled());
         objOrderPage.clickNextButton();
-        objOrderPage.waitForAboutRentFormDisplayed();
+        assertEquals("Про аренду", objOrderPage.getOrderFormTitle());
         objOrderPage.fillAboutRentFormFull(deliveryDate, rentalPeriod, color, comment);
-        assertTrue("TopOrderButton is disabled or missing", objOrderPage.isTopOrderButtonDisplayedAndEnabled());
+        assertTrue("AboutRentForm - TopOrderButton is disabled or missing", objOrderPage.isTopOrderButtonDisplayedAndEnabled());
         objOrderPage.clickTopOrderButton();
-        objOrderPage.waitForPlaceOrderModalDisplayed();
-        assertTrue("YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
+        assertTrue("TopOrderButtonClicked - PlaceOrderModal is not displayed", objOrderPage.isOrderModalPresent());
+        MatcherAssert.assertThat(objOrderPage.getOrderModalTitle(), startsWith("Хотите оформить заказ?"));
+        assertTrue("OrderModal - YesButton is disabled or missing", objOrderPage.isYesButtonDisplayedAndEnabled());
         objOrderPage.clickYesButton();
-        objOrderPage.waitForOrderCreatedModalDisplayed();
+        MatcherAssert.assertThat(objOrderPage.getOrderModalTitle(), startsWith("Заказ оформлен"));
     }
 }

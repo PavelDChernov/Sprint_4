@@ -9,11 +9,11 @@ import service.AbstractAutoTest;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public class FaqCheck extends AbstractAutoTest {
+public class FaqPanelContentsTest extends AbstractAutoTest {
     private final String faqPanelButtonText;
     private final String faqPanelText;
 
-    public FaqCheck (UsedWebDriver webDriver, List<String> driverOptions, String faqPanelButtonText, String faqPanelText) {
+    public FaqPanelContentsTest(UsedWebDriver webDriver, List<String> driverOptions, String faqPanelButtonText, String faqPanelText) {
         super(webDriver,driverOptions);
         this.faqPanelButtonText = faqPanelButtonText;
         this.faqPanelText = faqPanelText;
@@ -26,7 +26,7 @@ public class FaqCheck extends AbstractAutoTest {
                         UsedWebDriver.CHROME,
                         List.of("--no-sandbox", "--headless", "--disable-dev-shm-usage"),
                         "Сколько это стоит? И как оплатить?",
-                        "Да, обязательно. Всем самокатов! И Москве, и Московской области."
+                        "Сутки — 400 рублей. Оплата курьеру — наличными или картой."
                 },
                 {
                         UsedWebDriver.CHROME,
@@ -79,10 +79,11 @@ public class FaqCheck extends AbstractAutoTest {
 
         MainPageScooter objMainPage = new MainPageScooter(driver);
 
+        objMainPage.acceptCookie();
         objMainPage.waitForFaqPanelButtonDisplayed(faqPanelButtonText);;
-        assertTrue("faqPanelButton is disabled or missing", objMainPage.isFaqPanelButtonDisplayedAndEnabled(faqPanelButtonText));
+        assertTrue(faqPanelButtonText + " faqPanelButton is disabled or missing", objMainPage.isFaqPanelButtonDisplayedAndEnabled(faqPanelButtonText));
         objMainPage.clickFaqPanelButton(faqPanelButtonText);
         objMainPage.waitForFaqPanelDisplayed(faqPanelText);
-        assertTrue("faqPanel is not visible", objMainPage.isFaqPanelDisplayed(faqPanelText));
+        assertTrue(faqPanelText + " faqPanel is not visible", objMainPage.isFaqPanelDisplayed(faqPanelText));
     }
 }

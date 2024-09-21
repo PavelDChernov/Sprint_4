@@ -3,6 +3,7 @@ package pageObjects;
 import constants.Color;
 import constants.RentalPeriod;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -11,8 +12,8 @@ import java.util.List;
 // Локаторы и методы для страницы оформления заказа форма "Для кого самокат"
 public class OrderPageScooter {
     private WebDriver driver;
-    // локатор заголовка формы "Для кого самокат"
-    private By forWhomFormTitle = By.xpath(".//div[text()='Для кого самокат']");
+    // локатор заголовка формы "Для кого самокат" / "Про аренду"
+    private By orderFormTitle = By.xpath(".//div[contains(@class,'Order_Header')]");
     //  локатор поля "Имя"
     private By nameField = By.xpath(".//input[contains(@placeholder,'Имя')]");
     //  локатор поля "Фамилия"
@@ -25,8 +26,6 @@ public class OrderPageScooter {
     private By phoneField = By.xpath(".//input[contains(@placeholder,'Телефон')]");
     // локатор кнопки "Далее"
     private By nextButton = By.xpath(".//button[text()='Далее']");
-    // локатор заголовка формы "Про аренду"
-    private By aboutRentFormTitle = By.xpath(".//div[text()='Про аренду']");
     //  локатор поля "Когда привезти"
     private By deliveryDateField = By.xpath(".//input[contains(@placeholder,'Когда')]");
     //  локатор поля "Срок аренды"
@@ -42,11 +41,9 @@ public class OrderPageScooter {
     // локатор кнопки "Заказать" внизу страницы
     private By orderButtonBottom = By.xpath(".//div[contains(@class,'Order_Buttons')]//button[text()='Заказать']");
     // локатор кнопки "Да"
-    private By yesButton = By.xpath(".//button[text()='Да']");
-    // локатор модального окна "Хотите оформить заказ?"
-    private By placeOrderModalTitle = By.xpath(".//div[text()='Хотите оформить заказ?']");
-    // локатор модального окна "Заказ оформлен"
-    private By orderCreatedModalTitle = By.xpath(".//div[text()='Заказ оформлен']");
+    private By yesButton = By.xpath(".//div[contains(@class, 'Order_Modal')]//button[text()='Да']");
+    // локатор модального окна "Хотите оформить заказ?" / "Заказ оформлен"
+    private By orderModalTitle = By.xpath(".//div[contains(@class, 'Order_ModalHeader')]");
 
     // конструктор класса
     public OrderPageScooter(WebDriver driver){
@@ -71,7 +68,10 @@ public class OrderPageScooter {
     // метод заполняет поле "Станция метро"
     public void fillSubwayStation(String subwayStation) {
         driver.findElement(subwayStationField).clear();
+        driver.findElement(subwayStationField).click();
         driver.findElement(subwayStationField).sendKeys(subwayStation);
+        new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@class='select-search__select']//*[contains(text(),'" + subwayStation + "')]")));
         driver.findElement(By.xpath(".//*[@class='select-search__select']//*[contains(text(),'" + subwayStation + "')]")).click();
     }
     // метод заполняет поле "Телефон"
@@ -153,23 +153,21 @@ public class OrderPageScooter {
     }
     // метод кликает по кнопке "Да"
     public void clickYesButton() {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(yesButton));
         driver.findElement(yesButton).click();
     }
-    // метод ожидает отображение формы "Для кого самокат"
-    public void waitForWhomFormDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> (driver.findElement(forWhomFormTitle) != null));
+    // метод возвращает заголовок формы "Для кого самокат" / "Про аренду"
+    public String getOrderFormTitle() {
+        return driver.findElement(orderFormTitle).getText();
     }
-    // метод ожидает отображение формы "Про аренду"
-    public void waitForAboutRentFormDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> (driver.findElement(aboutRentFormTitle) != null));
+    // метод проверяет существование окна "Хотите оформить заказ?" / "Заказ оформлен"
+    public boolean isOrderModalPresent() {
+        List<WebElement> elements =  driver.findElements(orderModalTitle);
+        return !elements.isEmpty();
     }
-    // метод ожидает отображение окна "Хотите оформить заказ?"
-    public void waitForPlaceOrderModalDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> (driver.findElement(placeOrderModalTitle) != null));
-    }
-    // метод ожидает отображение окна "Заказ оформлен"
-    public void waitForOrderCreatedModalDisplayed() {
-        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> (driver.findElement(orderCreatedModalTitle) != null));
+    // метод возвращает заголовок окна "Хотите оформить заказ?" / "Заказ оформлен"
+    public String getOrderModalTitle() {
+        return driver.findElement(orderModalTitle).getText();
     }
     // метод заполняет форму "Для кого самокат"
     public void fillForWhomForm(String name, String surname, String address, String subwayStation, String phone) {
@@ -179,13 +177,11 @@ public class OrderPageScooter {
         fillSubwayStation(subwayStation);
         fillPhone(phone);
     }
-
     // метод заполняет только обязательные поля формы "Про аренду"
     public void fillAboutRentFormRequiredOnly(String deliveryDate, RentalPeriod rentalPeriod) {
         fillDeliveryDate(deliveryDate);
         fillRentalPeriod(rentalPeriod);
     }
-
     // метод заполняет все поля формы "Про аренду"
     public void fillAboutRentFormFull(String deliveryDate, RentalPeriod rentalPeriod, Color color, String comment) {
         fillDeliveryDate(deliveryDate);
